@@ -48,28 +48,64 @@ def test_subtraction(a: Number, b: Number, expected: Number) -> None:
     result = Operations.subtraction(a, b)
     assert result == expected, f"Expected addition({a}, {b}) to be {expected}, but got {result}"
 
-def test_multiplication_positive():
-    """Test positive cases for multiplication."""
-    assert Operations.multiplication(5, 7) == 35
-    assert Operations.multiplication(8, 1) == 8
-    assert Operations.multiplication(-4, -6) == 24
+@pytest.mark.parametrize(
+    "a, b, expected",
+    [
+        (2, 4, 8),
+        (0, 8, 0),
+        (-5, -3, 15),
+        (3.5, 2.0, 7.0),
+        (-3.5, 2.0, -7.0)
+    ],
+    ids=[
+        "multiply_two_positive_integers",
+        "multiply_zero_with_positive_integer",
+        "multiply_two_negative_numbers",
+        "multiply_two_positive_floats",
+        "multiply_negative_float_with_positive_float"
+    ]
+)
+def test_multiplication(a: Number, b: Number, expected: Number) -> None:
+    result = Operations.multiplication(a, b)
+    assert result == expected, f"Expected addition({a}, {b}) to be {expected}, but got {result}"
 
-def test_multiplication_negative():
-    """Test negative cases for multiplication."""
-    assert Operations.multiplication(4, -5) == -20
-    assert Operations.multiplication(-3, 3) == -9
+@pytest.mark.parametrize(
+    "a, b, expected",
+    [
+        (15, 3, 5),
+        (-10, -2, 5.0),
+        (12.0, 6.0, 2.0),
+        (-8.0, 2.0, -4.0),
+        (0, 9, 0.0),
+    ],
+    ids=[
+        "divide_two_positive_integers",
+        "divide_two_negative_integers",
+        "divide_two_positive_floats",
+        "divide_negative_float_by_positive_float",
+        "divide_zero_by_positve_integer"
+    ]
+)
+def test_division(a: Number, b: Number, expected: float) -> None:
+    result = Operations.division(a, b)
+    assert result == expected, f"Expected addition({a}, {b}) to be {expected}, but got {result}"
 
-def test_division_positive():
-    """Test positive cases for division."""
-    assert Operations.division(12, 2) == 6
-    assert Operations.division(-10, -2) == 5
+@pytest.mark.parametrize(
+    "a, b",
+    [
+        (1, 0),
+        (-1, 0),
+        (0, 0),
+    ],
+    ids=[
+        "divide_positive_dividend_by_zero",
+        "divide_negative_dividend_by_zero",
+        "divide_zero_by_zero"
+    ]
+)
+def test_division_by_zero(a: Number, b: Number) -> None:
+    with pytest.raises(ValueError, match="Division by zero is not allowed.") as excinfo:
+        Operations.division(a, b)
 
-def test_divistion_negative():
-    """Test negative cases for division."""
-    assert Operations.division(-12, 2) == -6
-    assert Operations.division(14, -7) == -2
-
-def test_division_by_zero():
-    """Test division by zero."""
-    with pytest.raises(ValueError, match="Division by zero is not allowed."):
-        Operations.division(5, 0)
+    assert "Division by zero is not allowed." in str(excinfo.value), \
+        f"Expected error message 'Division by zero is not allowed.', but got '{excinfo.value}'"
